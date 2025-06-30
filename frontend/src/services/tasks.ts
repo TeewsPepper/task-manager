@@ -4,6 +4,8 @@ import type { Task } from "../types/task";
 
 const API_URL = import.meta.env.VITE_API_URL + "/api/tasks";
 
+axios.defaults.withCredentials = true;
+
 // GET - Obtener todas las tareas
 export const getTasks = async (): Promise<Task[]> => {
   const response = await axios.get(API_URL);
