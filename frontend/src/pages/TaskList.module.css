@@ -1,4 +1,4 @@
-/* CONTENEDOR GENERAL */
+/* 
 .container {
   width: 80%;
   margin: 1.5rem 1rem;
@@ -9,7 +9,7 @@
   margin: auto;
 }
 
-/* HEADER */
+
 .header {
   font-size: 1.5rem;
   font-weight: 600;
@@ -18,7 +18,7 @@
   text-align: center;
 }
 
-/* NUEVA TAREA */
+
 .newTask {
   display: flex;
   flex-direction: column;
@@ -48,7 +48,7 @@
   background-color: #2b6cb0;
 }
 
-/* LISTA DE TAREAS */
+
 .taskList {
   list-style: none;
   padding: 0;
@@ -57,7 +57,7 @@
   gap: 1rem;
 }
 
-/* TARJETA DE TAREA */
+
 .taskCard {
   padding: 1rem;
   border-radius: 0.75rem;
@@ -85,7 +85,7 @@
   }
 }
 
-/* TEXTO DE TAREA */
+
 .taskTitle {
   flex: 1;
   font-size: 1rem;
@@ -106,7 +106,7 @@
   color: #718096;
 }
 
-/* ESTADO */
+
 .taskStatus {
   font-size: 0.75rem;
   padding: 0.35rem 0.75rem;
@@ -115,7 +115,7 @@
   font-weight: 600;
 }
 
-/* ESTILOS POR ESTADO */
+
 .statusTodo {
   background: #ebf8ff;
   color: #3182ce;
@@ -134,7 +134,7 @@
   border-left-color: #38a169;
 }
 
-/* BOTÓN ELIMINAR */
+
 .taskCard button {
   background: none;
   border: none;
@@ -147,7 +147,7 @@
   color: #c53030;
 }
 
-/* LOADER */
+
 .loaderContainer {
   display: flex;
   justify-content: center;
@@ -169,7 +169,7 @@
   }
 }
 
-/* ESTADO VACÍO */
+
 .emptyState {
   text-align: center;
   color: #718096;
@@ -177,4 +177,186 @@
   padding: 2rem;
   border-radius: 0.75rem;
   font-size: 1rem;
+}
+ */
+ .container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.header {
+  font-size: 1.8rem;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.newTask {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.newTask input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #cbd5e0;
+  font-size: 1rem;
+}
+
+.newTask button {
+  padding: 0.6rem 1rem;
+  background: #3182ce;
+  color: white;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.newTask button:hover {
+  background: #2b6cb0;
+}
+
+.taskList {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.taskCard {
+  background: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  border-left: 4px solid #e2e8f0;
+  cursor: grab;
+}
+
+.taskCard:active {
+  cursor: grabbing;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.4);
+}
+
+.taskCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  background: #edf2f7;
+}
+
+.taskContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.taskTitle {
+  flex-grow: 1;
+  color: #1a202c;
+  font-weight: 500;
+  font-size: 1rem;
+  border: none;
+  background: transparent;
+}
+
+.taskTitle:focus {
+  outline: none;
+  background: #fff;
+  border-bottom: 1px solid #cbd5e0;
+}
+
+.taskStatus {
+  padding: 0.35rem 0.8rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  border: none;
+}
+
+/* Status colors */
+.statusTodo {
+  background: #ebf8ff;
+  color: #3182ce;
+  border-left-color: #3182ce;
+}
+
+.statusInProgress {
+  background: #fffaf0;
+  color: #dd6b20;
+  border-left-color: #dd6b20;
+}
+
+.statusDone {
+  background: #f0fff4;
+  color: #38a169;
+  border-left-color: #38a169;
+}
+
+/* Drag overlay */
+.dragOverlay {
+  background: #fefcbf;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.4);
+  transform: rotate(2deg);
+  opacity: 0.95;
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+/* Loader */
+.loaderContainer {
+  display: flex;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.loader {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #4299e1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Empty state */
+.emptyState {
+  text-align: center;
+  color: #718096;
+  padding: 2rem;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: gray;
+}
+
+@media (max-width: 768px) {
+  .container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .taskCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
 }

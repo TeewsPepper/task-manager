@@ -8,12 +8,26 @@ import {
 } from "../services/tasks";
 import styles from "./TaskList.module.css";
 
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
 export const TaskList = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTitle, setNewTitle] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // Cargar tareas al iniciar
   useEffect(() => {
     getTasks()
       .then(setTasks)
@@ -46,6 +60,22 @@ export const TaskList = () => {
     setTasks((prev) => prev.filter((t) => t.id !== id));
   };
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    })
+  );
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = tasks.findIndex((t) => t.id === active.id);
+    const newIndex = tasks.findIndex((t) => t.id === over.id);
+    const nuevos = arrayMove(tasks, oldIndex, newIndex);
+    setTasks(nuevos);
+  };
+
   const getStatusClass = (status: Task["status"]) => {
     return {
       todo: styles.statusTodo,
@@ -74,39 +104,86 @@ export const TaskList = () => {
       ) : tasks.length === 0 ? (
         <div className={styles.emptyState}>No hay tareas aún.</div>
       ) : (
-        <ul className={styles.taskList}>
-          {tasks.map((task) => (
-            <li
-              key={task.id}
-              className={`${styles.taskCard} ${getStatusClass(task.status)}`}
-            >
-              <div className={styles.taskContent}>
-                <input
-                  className={`${styles.taskTitle} ${
-                    task.status === "done" ? styles.completed : ""
-                  }`}
-                  value={task.title}
-                  onChange={(e) => handleEdit(task, e.target.value)}
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext
+            items={tasks.map((task) => task.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <ul className={styles.taskList}>
+              {tasks.map((task) => (
+                <SortableTask
+                  key={task.id}
+                  task={task}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  onStatusChange={handleStatusChange}
+                  getStatusClass={getStatusClass}
                 />
-
-                <select
-                  className={`${styles.taskStatus}`}
-                  value={task.status}
-                  onChange={(e) =>
-                    handleStatusChange(task, e.target.value as Task["status"])
-                  }
-                >
-                  <option value="todo">Pendiente</option>
-                  <option value="in-progress">En progreso</option>
-                  <option value="done">Hecha</option>
-                </select>
-
-                <button onClick={() => handleDelete(task.id)}>🗑</button>
-              </div>
-            </li>
-          ))}
-        </ul>
+              ))}
+            </ul>
+          </SortableContext>
+        </DndContext>
       )}
     </div>
   );
 };
+
+const SortableTask = ({
+  task,
+  onEdit,
+  onDelete,
+  onStatusChange,
+  getStatusClass,
+}: {
+  task: Task;
+  onEdit: (task: Task, title: string) => void;
+  onDelete: (id: number) => void;
+  onStatusChange: (task: Task, status: Task["status"]) => void;
+  getStatusClass: (status: Task["status"]) => string;
+}) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: task.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <li
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className={`${styles.taskCard} ${getStatusClass(task.status)}`}
+    >
+      <div className={styles.taskContent}>
+        <input
+          className={`${styles.taskTitle} ${
+            task.status === "done" ? styles.completed : ""
+          }`}
+          value={task.title}
+          onChange={(e) => onEdit(task, e.target.value)}
+        />
+
+        <select
+          className={styles.taskStatus}
+          value={task.status}
+          onChange={(e) => onStatusChange(task, e.target.value as Task["status"])}
+        >
+          <option value="todo">Pendiente</option>
+          <option value="in-progress">En progreso</option>
+          <option value="done">Hecha</option>
+        </select>
+
+        <button onClick={() => onDelete(task.id)}>🗑</button>
+      </div>
+    </li>
+  );
+};
+
