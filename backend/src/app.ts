@@ -10,8 +10,11 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-  credentials: true,
+  origin: [
+    "https://task-manager-1-vk2h.onrender.com", // URL de tu frontend en Render
+    "http://localhost:5173"                     // Desarrollo local
+  ],
+  credentials: true
 }));
 app.use(express.json());
 
